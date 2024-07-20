@@ -11,7 +11,7 @@ let project = Project(
             infoPlist: .extendingDefault(
                 with: [
                     "UILaunchScreen": [
-                        "UIColorName": "",
+                        "UIColorName": "Brand",
                         "UIImageName": "",
                     ],
                 ]
