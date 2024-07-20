@@ -1,5 +1,23 @@
 import ProjectDescription
 
+let vk_client_id = "52017937" // TODO
+let infoPlist = InfoPlist.extendingDefault(
+    with: [
+        "UILaunchScreen": [
+            "UIColorName": "Brand",
+            "UIImageName": "",
+        ],
+        "LSApplicationQueriesSchemes": ["vkauthorize-silent"],
+        "CFBundleURLTypes": [
+            [
+                "CFBundleTypeRole": "Editor",
+                "CFBundleURLName": "auth_callback",
+                "CFBundleURLSchemes": ["\(vk_client_id)"]
+            ]
+        ]
+    ]
+)
+
 let project = Project(
     name: "vkClient",
     targets: [
@@ -8,17 +26,13 @@ let project = Project(
             destinations: .iOS,
             product: .app,
             bundleId: "io.tuist.vkClient",
-            infoPlist: .extendingDefault(
-                with: [
-                    "UILaunchScreen": [
-                        "UIColorName": "Brand",
-                        "UIImageName": "",
-                    ],
-                ]
-            ),
+            infoPlist: infoPlist,
             sources: ["vkClient/Sources/**"],
             resources: ["vkClient/Resources/**"],
-            dependencies: [.external(name: "Kingfisher")]
+            dependencies: [
+                .external(name: "Kingfisher"),
+                .external(name: "VKID"),
+            ]
         ),
         .target(
             name: "vkClientTests",
