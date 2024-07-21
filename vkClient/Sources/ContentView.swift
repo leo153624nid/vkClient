@@ -10,7 +10,6 @@ public struct ContentView: View {
     }
     
     @State private var showLogin = false
-    @State private var detentHeight: CGFloat = 0
     
     public var body: some View {
         VStack {
@@ -28,14 +27,7 @@ public struct ContentView: View {
         }
         .sheet(isPresented: $showLogin) {
             MyView(vkid: vkid)
-//                .readHeight()
-//                .onPreferenceChange(HeightPreferenceKey.self) { height in
-//                    if let height {
-//                        self.detentHeight = height
-//                    }
-//                }
-//                .presentationDetents([.height(self.detentHeight)])
-                .presentationDetents([.custom(MyCustomDetent.self)])
+                .presentationDetents([.custom(VKAuthViewDetent.self)])
 //                .presentationDetents([.medium])
         }
     }
@@ -56,9 +48,8 @@ struct MyView: UIViewControllerRepresentable {
     }
     
     func makeUIViewController(context: Context) -> UIViewController {
-        // Return MyViewController instance
         let oneTapSheet = OneTapBottomSheet(
-            serviceName: "Your service name",
+            serviceName: "vkClient",
             targetActionText: .signIn,
             oneTapButton: .init(
                 height: .medium(.h44),
@@ -67,59 +58,27 @@ struct MyView: UIViewControllerRepresentable {
             theme: .matchingColorScheme(.system),
             autoDismissOnSuccess: true
         ) { authResult in
-            // authResult handling
+            // authResult handling // TODO
         }
         let sheetViewController = vkid.ui(for: oneTapSheet).uiViewController()
+        
         return sheetViewController
     }
     
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        // Updates the state of the specified view controller with new information from SwiftUI.
-    }
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+    
 }
 
 
 
 
 
-struct MyCustomDetent: CustomPresentationDetent {
+struct VKAuthViewDetent: CustomPresentationDetent {
     static func height(in context: Context) -> CGFloat? {
         if context.verticalSizeClass == .regular {
-            return context.maxDetentValue * 0.3 // TODO
+            return context.maxDetentValue * 0.35
         } else {
             return context.maxDetentValue
         }
-    }
-}
-
-
-
-
-
-struct HeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat?
-
-    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
-        guard let nextValue = nextValue() else { return }
-        value = nextValue
-    }
-}
-
-private struct ReadHeightModifier: ViewModifier {
-    private var sizeView: some View {
-        GeometryReader { geometry in
-            Color.clear.preference(key: HeightPreferenceKey.self, value: geometry.size.height)
-        }
-    }
-
-    func body(content: Content) -> some View {
-        content.background(sizeView)
-    }
-}
-
-extension View {
-    func readHeight() -> some View {
-        self
-            .modifier(ReadHeightModifier())
     }
 }

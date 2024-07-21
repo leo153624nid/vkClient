@@ -5,7 +5,7 @@ let infoPlist = InfoPlist.extendingDefault(
     with: [
         "UILaunchScreen": [
             "UIColorName": "Brand",
-            "UIImageName": "",
+            "UIImageName": "vkIcon",
         ],
         "LSApplicationQueriesSchemes": ["vkauthorize-silent"],
         "CFBundleURLTypes": [
@@ -16,6 +16,10 @@ let infoPlist = InfoPlist.extendingDefault(
             ]
         ]
     ]
+)
+let swiftLintScript = TargetScript.pre(
+    path: "vkClient/Scripts/SwiftLint.sh",
+    name: "SwiftLint"
 )
 
 let project = Project(
@@ -29,6 +33,9 @@ let project = Project(
             infoPlist: infoPlist,
             sources: ["vkClient/Sources/**"],
             resources: ["vkClient/Resources/**"],
+            scripts: [
+                swiftLintScript,
+            ],
             dependencies: [
                 .external(name: "Kingfisher"),
                 .external(name: "VKID"),
