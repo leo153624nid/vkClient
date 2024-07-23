@@ -9,14 +9,14 @@ import SwiftUI
 
 struct VKLoginView: UIViewControllerRepresentable {
     
-    private let sheetViewController: UIViewController // TODO
+    private let sheetViewController: UIViewController?
     
-    init(sheetViewController: UIViewController) {
+    init(sheetViewController: UIViewController?) {
         self.sheetViewController = sheetViewController
     }
     
     func makeUIViewController(context: Context) -> UIViewController {
-        return sheetViewController
+        return sheetViewController ?? UIViewController()
     }
     
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }

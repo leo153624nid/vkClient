@@ -15,8 +15,13 @@ public struct MainView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background {
 //            VkClientAsset.Colors.brand.swiftUIColor
-            Color.red
+            viewModel.backgroundColor
                 .ignoresSafeArea()
+        }
+        .onAppear {
+            if !viewModel.isLoggedIn {
+                viewModel.perform(action: .showLoginView)
+            }
         }
         .sheet(isPresented: $viewModel.showLoginView) {
             VKLoginView(sheetViewController: viewModel.sheetViewController)

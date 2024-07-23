@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import SwiftUI
 import UIKit
 
 enum MainAction {
@@ -15,25 +16,22 @@ enum MainAction {
 
 final class MainViewModel: ObservableObject {
 //    @Injected private var credentialsService: CredentialsService
-    @Injected private var appState: Store<AppState>
 //    @Injected private var connectivityManager: ConnectivityManager
+    @Injected private var appState: Store<AppState>
     @Injected private var vkIDService: VKIDService
 
     private var cancellables = Set<AnyCancellable>()
 
     @Published var showLoginView = false
-    // TODO
-    @Published var isLoggedIn = true
-    @Published var messagingToken: String?
-    @Published var displayDevMenu = false
+    @Published var isLoggedIn = false
     
-    var sheetViewController: UIViewController { vkIDService.sheetViewController }
+    var sheetViewController: UIViewController? { vkIDService.sheetViewController }
+    var backgroundColor: Color {
+        isLoggedIn ? .green : .red
+    }
     
-//    let contentVM = ContentViewModel()
-
     init() {
         setupUpdates()
-        setupRoutingUpdates()
 //        restoreAuthorization()
 //        startNetworkConectionMonitor()
     }
@@ -41,10 +39,12 @@ final class MainViewModel: ObservableObject {
     func perform(action: MainAction) {
         switch action {
         case .showLoginView:
-//            guard EnvironmentChecker.isDebug else { return }
-//            appState[\.routing].main.showDevMenu = true
-            showLoginView.toggle() // TODO: - from appState ?
+            showLoginView.toggle()
         }
+    }
+    
+    private func startAuth() {
+        perform(action: .showLoginView)
     }
 
 //    private func restoreAuthorization() {
@@ -62,53 +62,36 @@ final class MainViewModel: ObservableObject {
 private extension MainViewModel {
     func setupUpdates() {
         setupStateUpdates()
+        setupRoutingUpdates()
     }
     
     func setupStateUpdates() {
-        Publishers.CombineLatest($isLoggedIn, $messagingToken)
-            .sink { [weak self] isLoggedIn, token in
-                guard let self else { return }
-                if isLoggedIn, token != nil {
-//                    self.updateFirebaseToken()
-                }
-            }
-            .store(in: &cancellables)
-        
         appState.updates(for: \.common.isLoggedIn)
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] updated in
                 guard let self else { return }
                 self.isLoggedIn = updated
-                if isLoggedIn {
-//                    self.registerCalls()
-                }
             }
             .store(in: &cancellables)
         
-        appState.updates(for: \.common.firebaseToken)
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] updated in
-                guard let self else { return }
-                self.messagingToken = updated
-            }
-            .store(in: &cancellables)
     }
 
     func setupRoutingUpdates() {
-        appState.updates(for: \.routing.main.showDevMenu)
+        appState.updates(for: \.routing.main.showLoginView)
+            .dropFirst()
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] updated in
-                self?.displayDevMenu = updated
+                self?.showLoginView = updated
             }
             .store(in: &cancellables)
 
-        $displayDevMenu
+        $showLoginView
+            .dropFirst()
             .removeDuplicates()
             .sink { [weak self] newValue in
-                self?.appState[\.routing].main.showDevMenu = newValue
+                self?.appState[\.routing].main.showLoginView = newValue
             }
             .store(in: &cancellables)
     }

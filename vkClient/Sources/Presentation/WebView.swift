@@ -9,11 +9,11 @@ import Foundation
 import SwiftUI
 import WebKit
 
-struct WebView: UIViewRepresentable { // TODO
+struct WebView: UIViewRepresentable { // TODO: - now unused
     typealias UIViewType = WKWebView
     
 //    let url = "https://google.com"
-    let vkAppID = "52017937"
+    let vkClientID = "52017937"
     
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
@@ -23,9 +23,9 @@ struct WebView: UIViewRepresentable { // TODO
         urlComponents.host = "oauth.vk.com"
         urlComponents.path = "/authorize"
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: vkAppID),
-//            URLQueryItem(name: "redirect_uri", value: "http://oauth.vk.com/blank.html"),
-            URLQueryItem(name: "redirect_uri", value: "https://foobar.ru/auth/vk-id"),
+            URLQueryItem(name: "client_id", value: vkClientID),
+            URLQueryItem(name: "redirect_uri", value: "http://oauth.vk.com/blank.html"),
+//            URLQueryItem(name: "redirect_uri", value: "https://foobar.ru/auth/vk-id"),
             URLQueryItem(name: "display", value: "mobile"),
             URLQueryItem(name: "response_type", value: "token")
         ]

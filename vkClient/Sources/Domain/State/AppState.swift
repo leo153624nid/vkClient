@@ -27,12 +27,9 @@ public struct AppState: Equatable { // TODO
 extension AppState {
     struct Common: Equatable {
         var authToken: String?
-        var firebaseToken: String?
         var isLoggedIn: Bool {
             authToken != nil
         }
-        var userId: Int?
-        var userName: String?
     }
 }
 
@@ -47,12 +44,7 @@ extension AppState {
 
 extension AppState.Routing {
     struct Main: Equatable {
-        var showDevMenu = false
-        
-        // State of current ConversationView
-        // (Not allowed in Routing.Content, because changes in Content change parent of ConversationView)
-        var conversationId: Int?
-        var needToRefreshConversation = false
+        var showLoginView = false
     }
 }
 
