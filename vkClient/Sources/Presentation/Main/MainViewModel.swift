@@ -25,6 +25,7 @@ final class MainViewModel: ObservableObject {
     @Published var showLoginView = false
     @Published var isLoggedIn = false
     
+    let feedViewModel = FeedViewModel()
     var sheetViewController: UIViewController? { vkIDService.sheetViewController }
     var backgroundColor: Color {
         isLoggedIn ? .green : .red

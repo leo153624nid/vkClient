@@ -18,8 +18,6 @@ protocol VKIDService {
 final class VKIDServiceImpl: VKIDService {
     @Injected private var appState: Store<AppState>
     
-    //    private let clientId = "52017937"
-    //    private let clientSecret = "Ux1cPTrYQHW0C6XhYmSs"
     private let vkid: VKID
     
     var sheetViewController: UIViewController?

@@ -8,23 +8,39 @@
 import Foundation
 
 final class ProductEnvironment: ServiceContainer {
-        private let clientId = "52017937" // TODO
-        private let clientSecret = "Ux1cPTrYQHW0C6XhYmSs"
+    private let clientId = "52017937" // TODO: - from keyChain ?
+    private let clientSecret = "Ux1cPTrYQHW0C6XhYmSs" // TODO: - from keyChain ?
+    private let baseURL = URL(string: "https://api.vk.com/method/")! // TODO: - update
+    private let headers: [String: String] = [:]
     
     override init() {
         super.init()
 
         registerAppState()
+        registerDataTransferService()
         registerVKIDService()
 //        registerConnectivityManager()
-//        registerDataTransferService()
 //        registerCredentialsModule()
-//        registerContactsModule()
+        registerNewsFeedModule()
     }
     
     private func registerAppState() {
         register(type: Store<AppState>.self, scope: .application) {
             Store<AppState>(.init())
+        }
+    }
+    
+    private func registerDataTransferService() {
+        register(type: DataTransferService.self) {
+            DefaultDataTransferService(
+                with: DefaultNetworkService(
+                    config: ApiDataNetworkConfig(
+                        baseURL: self.baseURL,
+                        headers: self.headers
+                    ),
+                    logger: NetworkErrorLoggerImpl()
+                )
+            )
         }
     }
     
@@ -37,23 +53,6 @@ final class ProductEnvironment: ServiceContainer {
 //    private func registerConnectivityManager() {
 //        register(type: ConnectivityManager.self, scope: .application) {
 //            ConnectivityManager(logger: os.Logger.monitor)
-//        }
-//    }
-    
-//    private func registerDataTransferService() {
-//        register(type: DataTransferService.self) {
-//            let standService = StandServiceImpl()
-//            standService.setupStand()
-//
-//            return DefaultDataTransferService(
-//                with: DefaultNetworkService(
-//                    config: ApiDataNetworkConfig(
-//                        baseURL: standService.baseURL,
-//                        headers: standService.requiredHeaders
-//                    ),
-//                    logger: NetworkErrorLoggerImpl() // now unused
-//                )
-//            )
 //        }
 //    }
     
@@ -75,13 +74,13 @@ final class ProductEnvironment: ServiceContainer {
 //        }
 //    }
     
-//    private func registerContactsModule() {
-//        register(type: ContactsService.self) {
-//            ContactsServiceImpl()
-//        }
-//        register(type: ContactsRepository.self) {
-//            ContactsRepositoryImpl()
-//        }
-//    }
+    private func registerNewsFeedModule() {
+        register(type: NewsFeedService.self) {
+            NewsFeedServiceImpl()
+        }
+        register(type: NewsFeedRepository.self) {
+            NewsFeedRepositoryImpl()
+        }
+    }
     
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LoginView: View {
+struct LoginView: View { // TODO: - now unused, delete
     var body: some View {
         WebView()
     }

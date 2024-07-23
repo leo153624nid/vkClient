@@ -5,9 +5,11 @@ struct VkClientApp: App {
     @Shared private var environment = createEnvironment()
     @UIApplicationDelegateAdaptor var appDelegate: AppDelegate
     
+    private let viewModel = MainViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            MainView(viewModel: MainViewModel())
+            MainView(viewModel: viewModel)
         }
     }
     
