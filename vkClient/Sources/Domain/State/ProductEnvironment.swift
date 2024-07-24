@@ -7,11 +7,8 @@
 
 import Foundation
 
-final class ProductEnvironment: ServiceContainer {
-    private let clientId = "52017937" // TODO: - from keyChain ?
-    private let clientSecret = "Ux1cPTrYQHW0C6XhYmSs" // TODO: - from keyChain ?
-    private let baseURL = URL(string: "https://api.vk.com/method/")! // TODO: - update
-    private let headers: [String: String] = [:]
+final class ProductEnvironment: ServiceContainer { // TODO: - delete //comments
+    private lazy var appConfiguration = AppConfiguration()
     
     override init() {
         super.init()
@@ -20,7 +17,7 @@ final class ProductEnvironment: ServiceContainer {
         registerDataTransferService()
         registerVKIDService()
 //        registerConnectivityManager()
-//        registerCredentialsModule()
+        registerCredentialsModule()
         registerNewsFeedModule()
     }
     
@@ -35,8 +32,8 @@ final class ProductEnvironment: ServiceContainer {
             DefaultDataTransferService(
                 with: DefaultNetworkService(
                     config: ApiDataNetworkConfig(
-                        baseURL: self.baseURL,
-                        headers: self.headers
+                        baseURL: self.appConfiguration.baseUrl,
+                        headers: self.appConfiguration.requiredHeaders
                     ),
                     logger: NetworkErrorLoggerImpl()
                 )
@@ -46,7 +43,8 @@ final class ProductEnvironment: ServiceContainer {
     
     private func registerVKIDService() {
         register(type: VKIDService.self) {
-            VKIDServiceImpl(clientId: self.clientId, clientSecret: self.clientSecret)
+            VKIDServiceImpl(clientId: self.appConfiguration.clientId,
+                            clientSecret: self.appConfiguration.clientSecret)
         }
     }
 
@@ -56,7 +54,7 @@ final class ProductEnvironment: ServiceContainer {
 //        }
 //    }
     
-//    private func registerCredentialsModule() {
+    private func registerCredentialsModule() {
 //        register(type: CredentialsService.self) {
 //            CredentialsServiceImpl()
 //        }
@@ -66,13 +64,10 @@ final class ProductEnvironment: ServiceContainer {
 //        register(type: RefreshTokenRepository.self) {
 //            RefreshTokenRepositoryImpl(logger: os.Logger.auth)
 //        }
-//        register(type: KeychainStorage.self) {
-//            KeychainStorageImpl()
-//        }
-//        register(type: AccountRepository.self) {
-//            AccountRepositoryImpl()
-//        }
-//    }
+        register(type: KeychainStorage.self) {
+            KeychainStorageImpl()
+        }
+    }
     
     private func registerNewsFeedModule() {
         register(type: NewsFeedService.self) {

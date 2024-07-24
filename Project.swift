@@ -39,6 +39,7 @@ let project = Project(
             dependencies: [
                 .external(name: "Kingfisher"),
                 .external(name: "VKID"),
+                .external(name: "KeychainSwift"),
             ]
         ),
         .target(

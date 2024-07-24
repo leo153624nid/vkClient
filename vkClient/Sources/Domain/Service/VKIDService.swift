@@ -17,6 +17,7 @@ protocol VKIDService {
 
 final class VKIDServiceImpl: VKIDService {
     @Injected private var appState: Store<AppState>
+    @Injected private var keychainStorage: KeychainStorage
     
     private let vkid: VKID
     
@@ -42,6 +43,7 @@ final class VKIDServiceImpl: VKIDService {
                 switch authResult {
                 case .success(let result):
                     self?.appState[\.common].authToken = result.accessToken.value
+                    self?.keychainStorage.setAuthToken(token: result.accessToken.value)
                 case .failure(let error):
                     print(error.localizedDescription) // TODO: - show error in view
                 }

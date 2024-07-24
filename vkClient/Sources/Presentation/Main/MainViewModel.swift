@@ -19,11 +19,12 @@ final class MainViewModel: ObservableObject {
 //    @Injected private var connectivityManager: ConnectivityManager
     @Injected private var appState: Store<AppState>
     @Injected private var vkIDService: VKIDService
+    @Injected private var keychainStorage: KeychainStorage
 
     private var cancellables = Set<AnyCancellable>()
 
     @Published var showLoginView = false
-    @Published var isLoggedIn = false
+    @Published var isLoggedIn = true
     
     let feedViewModel = FeedViewModel()
     var sheetViewController: UIViewController? { vkIDService.sheetViewController }
@@ -32,8 +33,8 @@ final class MainViewModel: ObservableObject {
     }
     
     init() {
+        restoreAuthorization()
         setupUpdates()
-//        restoreAuthorization()
 //        startNetworkConectionMonitor()
     }
 
@@ -48,11 +49,15 @@ final class MainViewModel: ObservableObject {
         perform(action: .showLoginView)
     }
 
-//    private func restoreAuthorization() {
-//        Task {
-//            credentialsService.restoreToken()
-//        }
-//    }
+    private func restoreAuthorization() {
+        guard let token = keychainStorage.getAuthToken() else {
+            appState[\.common].authToken = nil
+            isLoggedIn = false
+            return
+        }
+        appState[\.common].authToken = token
+        isLoggedIn = true
+    }
     
 //    private func startNetworkConectionMonitor() {
 //        connectivityManager.startNetworkConectionMonitor()
