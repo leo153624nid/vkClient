@@ -19,6 +19,7 @@ final class FeedViewModel: ObservableObject {
     @Injected private var appState: Store<AppState>
 //    @Injected private var vkIDService: VKIDService
     @Injected private var newsFeedService: NewsFeedService
+    @Injected private var keychainStorage: KeychainStorage // TODO: - delete
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -35,7 +36,8 @@ final class FeedViewModel: ObservableObject {
         case .loadNextPage:
             newsFeedService.loadNextPage()
         case .showLoginView:
-            showLoginView.toggle()
+//            showLoginView.toggle()
+            keychainStorage.deleteAuthToken()
         }
     }
     

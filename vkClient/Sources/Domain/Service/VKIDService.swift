@@ -32,12 +32,14 @@ final class VKIDServiceImpl: VKIDService {
             self.vkid = vkid
             
             // Setup SheetViewController
+            let authConfiguration = AuthConfiguration(scope: Scope("friends wall"))
             let oneTapSheet = OneTapBottomSheet(
                 serviceName: "vkClient",
                 targetActionText: .signIn,
                 oneTapButton: .init(height: .medium(.h44),
                                     cornerRadius: 8),
-                theme: .matchingColorScheme(.system),
+                authConfiguration: authConfiguration,
+                theme: .matchingColorScheme(.system), 
                 autoDismissOnSuccess: true
             ) { [weak self] authResult in
                 switch authResult {

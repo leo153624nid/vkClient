@@ -17,7 +17,10 @@ struct FeedView: View {
                 .onTapGesture {
                     viewModel.perform(action: .loadNextPage)
                 }
-            
+            Spacer()
+            Button("Clear token") {
+                viewModel.perform(action: .showLoginView)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

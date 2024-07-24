@@ -18,7 +18,6 @@ struct APIEndpoints {
         return [
 //            "Accept": "application/json",
             "Authorization": "Bearer \(token)"
-//            "v": "5.199"
         ]
     }
 }

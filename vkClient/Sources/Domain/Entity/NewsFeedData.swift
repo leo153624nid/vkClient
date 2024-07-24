@@ -21,10 +21,10 @@ struct NewsFeedData: Decodable { // TODO: - update
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.items = (try? container.decode([NewsItem].self, forKey: .items)) ?? []
         self.newOffset = try container.decodeIfPresent(String.self, forKey: .newOffset)
         self.nextFrom = try container.decodeIfPresent(String.self, forKey: .nextFrom)
-        self.error = try? container.decodeIfPresent(VKError.self, forKey: .error)
+        self.error = try container.decodeIfPresent(VKError.self, forKey: .error)
+        self.items = try container.decodeIfPresent([NewsItem].self, forKey: .items) ?? []
     }
     
     enum CodingKeys: String, CodingKey {
